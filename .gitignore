@@ -21,3 +21,4 @@ docs/_build/
 
 # I added:
 venv/
+vagrant/newsdata.sql
