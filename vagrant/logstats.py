@@ -1,28 +1,56 @@
-#!/home/benlove/projects/FSND-Virtual-Machine/venv/bin/ python3
+#!/home/benlove/projects/FSND-Virtual-Machine/venv/bin/python3
 
 # Database code for log analysis project
 
 import psycopg2
+# import datetime
 
 
 def main():
     popular_articles()
-    popular_authors
+    popular_authors()
     high_errors()
     output_result()
 
 
-# What are the most popular three articles of all time?
+# Most popular three articles of all time?
 def popular_articles():
-    pass
+    pg = psycopg2.connect(dbname="news")
+    c = pg.cursor()
+    query = "select title, count(*) as views from articles as t1 join log as t2 on position(t1.slug in t2.path)<>0 where t2.status = '200 OK' group by title order by views desc limit 3;"
+    c.execute(query)
+    result = c.fetchall()
+    print(result)
+    c.close()
+    pg.close()
+    return result
 
-# Who are the most popular article authors of all time?
+# Most popular authors of all time, sorted by article views?
 def popular_authors():
-    pass
+    pg = psycopg2.connect(dbname="news")
+    c = pg.cursor()
+    base_query = "(select slug, name from articles join authors on articles.author = authors.id)"
+    query = "select name, count(*) as views from {} as t1 join log as t2 on position(t1.slug in t2.path)<>0 where t2.status = '200 OK' group by name order by views desc;".format(base_query)
+    c.execute(query)
+    result = c.fetchall()
+    print(result)
+    c.close()
+    pg.close()
+    return result
 
 # On which days did more than 1% of requests lead to errors?
 def high_errors():
-    pass
+    pg = psycopg2.connect(dbname="news")
+    c = pg.cursor()
+    table_1 = "(select date_trunc('day', log.time) \"day\", count(*) as successes from log where status = '200 OK' group by 1 order by 1)"
+    table_2 = "(select date_trunc('day', log.time) \"day\", count(*) as errors from log where status != '200 OK' group by 1 order by 1)"
+    query = "select ok.day, (1.0*errors/successes) as percent from {} as ok join {} as err on ok.day = err.day where (1.0*errors/successes)>0.01;".format(table_1, table_2)
+    c.execute(query)
+    result = c.fetchall()
+    print(result)
+    c.close()
+    pg.close()
+    return result
 
 # Log success/error counts
 def output_result():
