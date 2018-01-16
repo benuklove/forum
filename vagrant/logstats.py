@@ -2,14 +2,10 @@
 
 # Database code for log analysis project
 
-import datetime as dt
 import psycopg2
 
 
 def main():
-    popular_articles()
-    popular_authors()
-    high_errors()
     output_result()
 
 
@@ -20,12 +16,12 @@ def popular_articles():
     query = "select title, count(*) as views from articles as t1 join log as t2 on position(t1.slug in t2.path)<>0 where t2.status = '200 OK' group by title order by views desc limit 3;"
     c.execute(query)
     result = c.fetchall()
+    articles = ""
     for item in result:
-        print("\"{}\" -- {} views".format(item[0], item[1]))
-    # print(result)
+        articles += "\"{}\" -- {} views\n".format(item[0], item[1])
     c.close()
     pg.close()
-    return result
+    return articles
 
 # Most popular authors of all time, sorted by article views?
 def popular_authors():
@@ -35,12 +31,12 @@ def popular_authors():
     query = "select name, count(*) as views from {} as t1 join log as t2 on position(t1.slug in t2.path)<>0 where t2.status = '200 OK' group by name order by views desc;".format(base_query)
     c.execute(query)
     result = c.fetchall()
+    authors = ""
     for item in result:
-        print("{: <25} {: >6} views".format(*item))
-    # print(result)
+        authors += "{: <25} {: >6} views\n".format(*item)
     c.close()
     pg.close()
-    return result
+    return authors
 
 # On which days did more than 1% of requests lead to errors?
 def high_errors():
@@ -51,21 +47,25 @@ def high_errors():
     query = "select ok.day, (1.0*errors/successes) as percent from {} as ok join {} as err on ok.day = err.day where (1.0*errors/successes)>0.01;".format(table_1, table_2)
     c.execute(query)
     result = c.fetchall()
+    errors = ""
     for item in result:
         d = item[0]
         d.strftime("%b %d, %Y")
         percent = round((item[1] * 100), 1)
-        print("{: <15} {}%".format(d.strftime('%b %d, %Y'), percent))
+        errors += "{: <15} {}% errors".format(d.strftime('%b %d, %Y'), percent)
     c.close()
     pg.close()
-    return result
+    return errors
 
-# Log success/error counts
+# Log results to file
 def output_result():
-    pass
-# with open("output.txt", "a") as text_file:
-#     text_file.write("Successes: {} ".format(successes))
-#     text_file.write("Errors: {}\n".format(errors))
+    errors = high_errors()
+    authors = popular_authors()
+    articles = popular_articles()
+    with open("output.txt", "a") as text_file:
+        text_file.write("Top three most popular articles\n--------------------------------------------------\n{}\n\n".format(articles))
+        text_file.write("Most popular authors of all time, sorted by article views\n---------------------------------------------------------\n{}\n\n".format(authors))
+        text_file.write("Days with errors greater than 1%\n--------------------------------\n{}\n\n".format(errors))
 
 
 if __name__ == '__main__':
