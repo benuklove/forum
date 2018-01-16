@@ -5,12 +5,10 @@
 import datetime as dt
 import psycopg2
 
-# import datetime.strftime from datetime
-
 
 def main():
-    # popular_articles()
-    # popular_authors()
+    popular_articles()
+    popular_authors()
     high_errors()
     output_result()
 
@@ -56,8 +54,8 @@ def high_errors():
     for item in result:
         d = item[0]
         d.strftime("%b %d, %Y")
-        print("{: <15} {}%".format(d.strftime('%b %d, %Y'), item[1]))
-    print(result)
+        percent = round((item[1] * 100), 1)
+        print("{: <15} {}%".format(d.strftime('%b %d, %Y'), percent))
     c.close()
     pg.close()
     return result
