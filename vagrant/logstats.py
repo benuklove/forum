@@ -8,7 +8,7 @@ import psycopg2
 
 def main():
     popular_articles()
-    # popular_authors()
+    popular_authors()
     # high_errors()
     output_result()
 
@@ -35,7 +35,9 @@ def popular_authors():
     query = "select name, count(*) as views from {} as t1 join log as t2 on position(t1.slug in t2.path)<>0 where t2.status = '200 OK' group by name order by views desc;".format(base_query)
     c.execute(query)
     result = c.fetchall()
-    print(result)
+    for item in result:
+        print("{: <25} {: >6} views".format(*item))
+    # print(result)
     c.close()
     pg.close()
     return result
