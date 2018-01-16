@@ -2,14 +2,16 @@
 
 # Database code for log analysis project
 
+import datetime as dt
 import psycopg2
-# import datetime
+
+# import datetime.strftime from datetime
 
 
 def main():
-    popular_articles()
-    popular_authors()
-    # high_errors()
+    # popular_articles()
+    # popular_authors()
+    high_errors()
     output_result()
 
 
@@ -51,6 +53,10 @@ def high_errors():
     query = "select ok.day, (1.0*errors/successes) as percent from {} as ok join {} as err on ok.day = err.day where (1.0*errors/successes)>0.01;".format(table_1, table_2)
     c.execute(query)
     result = c.fetchall()
+    for item in result:
+        d = item[0]
+        d.strftime("%b %d, %Y")
+        print("{: <15} {}%".format(d.strftime('%b %d, %Y'), item[1]))
     print(result)
     c.close()
     pg.close()
