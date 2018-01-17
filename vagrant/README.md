@@ -21,10 +21,10 @@ Logs Analysis Project
   - columns: (primary - id), ip, method, status, time, path
 
 Python script to query the database, return results as text file
-- logstats.py
+- [logstats.py](https://github.com/benuklove/forum/blob/master/vagrant/logstats.py)
 
 Resulting text file with query output
-- output.txt
+- [output.txt](https://github.com/benuklove/forum/blob/master/vagrant/output.txt)
 
 #### Requirements
 
