@@ -12,7 +12,7 @@ Logs Analysis Project
 
 #### Relevant Files
 
-[Database Tables](https://github.com/benuklove/forum/blob/master/vagrant/news_tables.png) - from newsdata.sql (not included)
+[Database Tables](https://github.com/benuklove/forum/blob/master/vagrant/news_tables.png) - from newsdata.sql (not included, but can be downloaded [here](https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip))
 - authors
   - columns: (primary - id), name, bio
 - articles
