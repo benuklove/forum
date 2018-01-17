@@ -98,7 +98,7 @@ def output_result():
 
         text_file.write("Top three most popular articles\n"
                         "--------------------------------------------------"
-                        "\n{}\n\n"\
+                        "\n{}\n\n"
                         .format(articles))
 
         text_file.write("Most popular authors of all time,"
