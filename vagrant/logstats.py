@@ -10,61 +10,62 @@ def main():
     output_result()
 
 
+def get_query_results(database, query):
+    """Helper function to make generic queries to a PostgreSQL database.
+    Connect, query, return result, and close connection.
+    Two parameters required:
+    Database name (as a string),
+    Query to be made.
+    """
+    pg = psycopg2.connect(dbname=database)
+    c = pg.cursor()
+    c.execute(query)
+    result = c.fetchall()
+    c.close()
+    pg.close()
+    return result
+
+
 def popular_articles():
     """Most popular three articles of all time.
-    Connect, query, return result, and close connection.
     Format result for easy reading.
     """
-    pg = psycopg2.connect(dbname="news")
-    c = pg.cursor()
     query = "select title, count(*) as views from articles\
                 as t1 join log as t2 on position(t1.slug in t2.path)<>0\
                  where t2.status = '200 OK'\
                   group by title order by views desc limit 3;"
-    c.execute(query)
-    result = c.fetchall()
+    result = get_query_results("news", query)
     articles = ""
     for item in result:
         articles += "\"{}\" -- {} views\n".format(item[0], item[1])
-    c.close()
-    pg.close()
     return articles
 
 
 def popular_authors():
     """Most popular authors of all time, sorted by article views.
-    Connect, query, return result, and close connection.
     Format result for easy reading.
     """
-    pg = psycopg2.connect(dbname="news")
-    c = pg.cursor()
     base_query = "(select slug, name from articles join authors\
                      on articles.author = authors.id)"
     query = "select name, count(*) as views\
              from {} as t1 join log as t2 on position(t1.slug in t2.path)<>0\
               where t2.status = '200 OK' group by name order by views desc;"\
               .format(base_query)
-    c.execute(query)
-    result = c.fetchall()
+    result = get_query_results("news", query)
     authors = ""
     for item in result:
         authors += "{: <25} {: >6} views\n".format(*item)
-    c.close()
-    pg.close()
     return authors
 
 
 def high_errors():
     """On which days did more than 1% of requests lead to errors?
-    Connect, query, return result, and close connection.
     In one query, two tables are made:
     one with columns of (day, successes),
     the other with columns of (day, errors).
     They are joined into a table with (day, percent).
     Format result for easy reading.
     """
-    pg = psycopg2.connect(dbname="news")
-    c = pg.cursor()
     table_1 = "(select date_trunc('day', log.time) \"day\",\
                  count(*) as successes from log where status = '200 OK'\
                   group by 1 order by 1)"
@@ -76,21 +77,18 @@ def high_errors():
              on ok.day = err.day \
              where (1.0*errors/successes)>0.01;"\
              .format(table_1, table_2)
-    c.execute(query)
-    result = c.fetchall()
+    result = get_query_results("news", query)
     errors = ""
     for item in result:
         d = item[0]
         d.strftime("%b %d, %Y")
         percent = round((item[1] * 100), 1)
         errors += "{: <15} {}% errors".format(d.strftime('%b %d, %Y'), percent)
-    c.close()
-    pg.close()
     return errors
 
 
 def output_result():
-    """Log results to file"""
+    """Log results to file."""
     errors = high_errors()
     authors = popular_authors()
     articles = popular_articles()
