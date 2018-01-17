@@ -30,6 +30,8 @@ Resulting text file with query output
 
 The only non-standard library you will need is psycopg.
 
+This project runs on Python.  It will not run on "legacy Python".
+
 #### How to run
 
 From the terminal, in the same directory as newsdata.sql, and after loading the data with `psql -d news -f newsdata.sql`, type python logstats.py.
