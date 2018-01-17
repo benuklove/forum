@@ -71,7 +71,8 @@ def high_errors():
     table_2 = "(select date_trunc('day', log.time) \"day\",\
                  count(*) as errors from log where status != '200 OK'\
                   group by 1 order by 1)"
-    query = "select ok.day, (1.0*errors/successes) as percent from {} as ok join {} as err\
+    query = "select ok.day, (1.0*errors/successes) as percent\
+             from {} as ok join {} as err\
              on ok.day = err.day \
              where (1.0*errors/successes)>0.01;"\
              .format(table_1, table_2)
