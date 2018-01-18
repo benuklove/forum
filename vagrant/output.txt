@@ -15,5 +15,5 @@ Markoff Chaney             84557 views
 
 Days with errors greater than 1%
 --------------------------------
-Jul 17, 2016    2.3% errors
+Jul 17, 2016    2.281% errors
 
