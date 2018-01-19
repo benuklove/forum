@@ -32,7 +32,7 @@ def popular_articles():
     query = """
         select title, views
             from
-                (select path, status, count(*) as views from log
+                (select path, count(*) as views from log
                 group by path, status)
             as t2
             join articles
