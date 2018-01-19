@@ -4,7 +4,8 @@
 Logs Analysis Project
 ---------------------------------------------------------------------------
 
-### This project sets up a mock PostgreSQL database for a fictional news website. The provided Python script uses the psycopg2 library to query the database and produce a report that answers the following three questions:
+### This project sets up a mock PostgreSQL database for a fictional news website. 
+### The provided Python script uses the psycopg2 library to query the database and produce a report that answers the following three questions:
 
 1.  What are the most popular three articles of all time?
 2.  Who are the most popular article authors of all time?
