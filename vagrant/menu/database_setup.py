@@ -30,7 +30,7 @@ class Restaurant(Base):
 
 class MenuItem(Base):
     __table_name__ = 'menu_item'
-        name = Column(
+    name = Column(
         String(80),
         nullable = False,
     )
