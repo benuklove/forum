@@ -18,7 +18,7 @@ from sqlalchemy import create_engine
 Base = declarative_base()
 
 class Restaurant(Base):
-    __table_name__ = 'restaurant'
+    __tablename__ = 'restaurant'
     name = Column(
         String(80),
         nullable = False,
@@ -29,7 +29,7 @@ class Restaurant(Base):
     )
 
 class MenuItem(Base):
-    __table_name__ = 'menu_item'
+    __tablename__ = 'menu_item'
     name = Column(
         String(80),
         nullable = False,
