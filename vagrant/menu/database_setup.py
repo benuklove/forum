@@ -17,6 +17,7 @@ from sqlalchemy import create_engine
 # Lets SQLAlchemy know that our classes are special SQL classes
 Base = declarative_base()
 
+# Mapper code:
 class Restaurant(Base):
     __tablename__ = 'restaurant'
     name = Column(
